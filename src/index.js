@@ -22,20 +22,26 @@ function onEvent(event) {
         Notify.info(
           'Too many matches found. Please enter a more specific name.'
         );
-      } else if (data.length >= 2 && data.length <= 10) {
-        countryContainer.innerHTML = '';
-        renderFlagName(data);
-      } else if (data.length === 1) {
-        countryList.innerHTML = '';
-        renderCountriesName(data);
+      } else {
+        addMarkup(data);
       }
     })
-    .catch(onError);
+    .catch(error => {
+      if (error.message === '404') {
+        countryContainer.innerHTML = '';
+        countryList.innerHTML = '';
+        Notify.failure('Oops, there is no country with that name');
+      }
+    });
 }
 
-function onError(error) {
-  if (error.message === 'Not Found') {
-    Notiflix.Notify.failure('Oops, there is no country with that name');
+function addMarkup(data) {
+  if (data.length === 1) {
+    countryList.innerHTML = '';
+    renderCountriesName(data);
+  } else {
+    countryContainer.innerHTML = '';
+    renderFlagName(data);
   }
 }
 
